@@ -1,18 +1,13 @@
 import React from 'react';
+import { useState } from 'react';
 import OrderBy from './OrderBy';
 
-class Products extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedOrder: '',
-    };
-  }
-
-  handleOrderBy = (event) => {
-    this.setState({ selectedOrder: event.target.value });
+function Products({ selectedSizes, handleAddToCart, data }) {
+  let [selectedOrder, setSelectedOrder] = useState('');
+  const handleOrderBy = (event) => {
+    setSelectedOrder(event.target.value);
   };
-  handleOrderProducts = (order, sizes, products) => {
+  const handleOrderProducts = (order, sizes, products) => {
     let sortedProducts = [...products];
     if (sizes.length > 0) {
       // eslint-disable-next-line array-callback-return
@@ -34,40 +29,26 @@ class Products extends React.Component {
     return sortedProducts;
   };
 
-  render() {
-    let { selectedOrder } = this.state;
-    let products = this.handleOrderProducts(
-      selectedOrder,
-      this.props.selectedSizes,
-      this.props.data
-    );
+  let products = handleOrderProducts(selectedOrder, selectedSizes, data);
 
-    return (
-      <>
-        <div>
-          <div className="products-filter">
-            <p>
-              {`${this.props.data.length} Product${
-                this.props.data.length > 1 ? 's' : ''
-              } found.`}{' '}
-            </p>
-            <OrderBy
-              selectedOrder={selectedOrder}
-              handleOrderBy={this.handleOrderBy}
-            />
-          </div>
-          <div className="flex wrap">
-            {products.map((product) => (
-              <Product
-                {...product}
-                handleAddToCart={this.props.handleAddToCart}
-              />
-            ))}
-          </div>
+  return (
+    <>
+      <div>
+        <div className="products-filter">
+          <p>{`${data.length} Product${data.length > 1 ? 's' : ''} found.`} </p>
+          <OrderBy
+            selectedOrder={selectedOrder}
+            handleOrderBy={handleOrderBy}
+          />
         </div>
-      </>
-    );
-  }
+        <div className="flex wrap">
+          {products.map((product, id) => (
+            <Product key={id} {...product} handleAddToCart={handleAddToCart} />
+          ))}
+        </div>
+      </div>
+    </>
+  );
 }
 
 function Product(props) {

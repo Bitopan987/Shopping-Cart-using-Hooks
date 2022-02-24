@@ -1,11 +1,11 @@
 import React from 'react';
 
-function OrderBy(props) {
+function OrderBy({ selectedOrder, handleOrderBy }) {
   return (
     <>
       <div className="sort">
         Order By
-        <select value={props.selectedOrder} onChange={props.handleOrderBy}>
+        <select value={selectedOrder} onChange={handleOrderBy}>
           <option value="">Select</option>
           <option value="lowest">Lowest to highest</option>
           <option value="highest">Highest to lowest</option>

@@ -1,14 +1,14 @@
 import Products from './Products';
 import React from 'react';
 
-function Main(props) {
+function Main({ products, selectedSizes, handleAddToCart }) {
   return (
     <>
       <div className="main flex-80">
         <Products
-          data={props.products}
-          selectedSizes={props.selectedSizes}
-          handleAddToCart={props.handleAddToCart}
+          data={products}
+          selectedSizes={selectedSizes}
+          handleAddToCart={handleAddToCart}
         />
       </div>
     </>

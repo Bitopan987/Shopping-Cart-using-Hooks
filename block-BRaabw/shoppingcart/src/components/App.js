@@ -1,32 +1,26 @@
 import { products } from './data.json';
+import { useState } from 'react';
 import Main from './Main';
 import Sidebar from './Sidebar';
 import Cart from './Cart';
-import React from 'react';
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedSizes: [],
-      cartItems: [],
-    };
-  }
 
-  handleAddToCart = (p) => {
+function App() {
+  let [selectedSizes, setSelectedSizes] = useState([]);
+  let [cartItems, setCartItems] = useState([]);
+
+  const handleAddToCart = (p) => {
     let isPresent =
-      this.state.cartItems.findIndex((product) => product.id === p.id) !== -1;
+      cartItems.findIndex((product) => product.id === p.id) !== -1;
     if (isPresent) {
-      this.incrementQuantity(p.id);
+      incrementQuantity(p.id);
     } else {
-      this.setState((prevState) => ({
-        cartItems: prevState.cartItems.concat({ ...p, quantity: 1 }),
-      }));
+      setCartItems((cartItems) => cartItems.concat({ ...p, quantity: 1 }));
     }
   };
 
-  incrementQuantity = (id) => {
-    this.setState((prevState) => {
-      let updatedCartItem = prevState.cartItems.map((p) => {
+  const incrementQuantity = (id) => {
+    setCartItems((cartItems) => {
+      let updatedCartItem = cartItems.map((p) => {
         if (p.id === id) {
           return {
             ...p,
@@ -35,15 +29,13 @@ class App extends React.Component {
         }
         return p;
       });
-      return {
-        cartItems: updatedCartItem,
-      };
+      return updatedCartItem;
     });
   };
 
-  decrementQuantity = (id) => {
-    this.setState((prevState) => {
-      let updatedCartItem = prevState.cartItems.map((p) => {
+  const decrementQuantity = (id) => {
+    setCartItems((cartItems) => {
+      let updatedCartItem = cartItems.map((p) => {
         if (p.id === id) {
           return {
             ...p,
@@ -52,58 +44,51 @@ class App extends React.Component {
         }
         return p;
       });
-      return {
-        cartItems: updatedCartItem,
-      };
+      return updatedCartItem;
     });
   };
 
-  deleteItem = (id) => {
-    this.setState((prevState) => {
-      let updatedCartItem = prevState.cartItems.filter((p) => {
+  const deleteItem = (id) => {
+    setCartItems((cartItems) => {
+      let updatedCartItem = cartItems.filter((p) => {
         return p.id !== id;
       });
-      return {
-        cartItems: updatedCartItem,
-      };
+      return updatedCartItem;
     });
   };
 
-  handleClick = (size) => {
-    if (this.state.selectedSizes.includes(size)) {
-      this.setState((prevState) => ({
-        selectedSizes: prevState.selectedSizes.filter((s) => s !== size),
-      }));
+  const handleClick = (size) => {
+    if (selectedSizes.includes(size)) {
+      setSelectedSizes((selectedSizes) =>
+        selectedSizes.filter((s) => s !== size)
+      );
     } else {
-      this.setState((prevState) => ({
-        selectedSizes: prevState.selectedSizes.concat(size),
-      }));
+      setSelectedSizes((selectedSizes) => selectedSizes.concat(size));
     }
   };
-  render() {
-    return (
-      <>
-        <div className="wrapper flex space-between">
-          <Sidebar
-            products={products}
-            selectedSizes={this.state.selectedSizes}
-            handleClick={this.handleClick}
-          />
-          <Main
-            products={products}
-            selectedSizes={this.state.selectedSizes}
-            handleAddToCart={this.handleAddToCart}
-          />
-          <Cart
-            cartItems={this.state.cartItems}
-            incrementQuantity={this.incrementQuantity}
-            decrementQuantity={this.decrementQuantity}
-            deleteItem={this.deleteItem}
-          />
-        </div>
-      </>
-    );
-  }
+
+  return (
+    <>
+      <div className="wrapper flex space-between">
+        <Sidebar
+          products={products}
+          selectedSizes={selectedSizes}
+          handleClick={handleClick}
+        />
+        <Main
+          products={products}
+          selectedSizes={selectedSizes}
+          handleAddToCart={handleAddToCart}
+        />
+        <Cart
+          cartItems={cartItems}
+          incrementQuantity={incrementQuantity}
+          decrementQuantity={decrementQuantity}
+          deleteItem={deleteItem}
+        />
+      </div>
+    </>
+  );
 }
 
 export default App;
